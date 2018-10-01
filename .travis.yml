@@ -1,3 +1,5 @@
+## BUILD && TEST ##
+# run tests on all branches!
 sudo: required
 services:
   - docker
@@ -5,3 +7,27 @@ before_install:
   - docker build -t colinsr/react-docker -f Dockerfile.dev .
 script:
   - docker run colinsr/react-docker npm run test -- --coverage
+
+## DEPLOY ##
+# Add AWS access/secret to ENV secrets in travis UI
+# more options Env Vars => K | V and not show in build log
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"                                    # OHIO!
+  app: "react-docker"                                    # Make sure this maps to what you created in AWS
+  env: "production"                                      # whatever you named your env in the console
+  bucket_name: "elastic-beanstalk-us-east-2-12345678901" # where will objects be stored?
+  bucket_path: "react-docker"                            # same path as app name in EBS
+  on:
+    branch: master # only deploy when a PR is merged to master - this will go live
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+
+# https://docs.travis-ci.com/user/deployment/azure-web-apps/
+# deploy:
+#   provider: azure_web_apps
+#   username: azure_deployment_user       # If AZURE_WA_USERNAME isn't set
+#   password: azure_deployment_password   # If AZURE_WA_PASSWORD isn't set
+#   site: azure_deployment_sitename       # If AZURE_WA_SITE isn't set
+#   slot: azure_deployment_slotname       # (optional) If AZURE_WA_SLOT isn't set
