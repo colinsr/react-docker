@@ -1,0 +1,17 @@
+# BASE
+FROM node:alpine
+
+# CREATE/MOVE TO /app
+WORKDIR '/app'
+
+# PULL OVER DEPS
+COPY package.json .
+
+# INSTALL DEPS
+RUN npm install
+
+# NOW COPY APP OVER
+COPY . .
+
+# NOW START APP
+CMD ["npm", "run", "start"]
