@@ -13,6 +13,8 @@ RUN npm run build
 
 ## RUN PHASE
 FROM nginx:1.14.0-alpine
+## open port!
+EXPOSE 80
 ##/app/build will have the guts of our app
 COPY --from=build /app/build /usr/share/nginx/html
 ## NGINX AUTO STARTS!
